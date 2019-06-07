@@ -19,5 +19,5 @@ Address Selector
 MicroProgram sequencer
 
 For better understanding go through each and every one
-For signal refer to PDF 
-Some of the signal changes plz refer to image
+For signal refer to Architecture PDF 
+Some of the signal changes plz refer to Architecture image
