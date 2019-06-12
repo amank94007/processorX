@@ -24,4 +24,5 @@ Some of the signal changes plz refer to Architecture image
 REFERENCE LINK: https://github.com/topics/processor?l=verilog
 https://en.wikibooks.org/wiki/Microprocessor_Design
 http://libgen.io/search.php?req=Superscalar+Microprocessors+Design&open=0&res=25&view=detailed&phrase=1&column=def
-
+https://github.com/amank94007/processorX/blob/master/jeemon2016.pdf
+https://github.com/amank94007/processorX/blob/master/ic_design_finalreport.pdf
