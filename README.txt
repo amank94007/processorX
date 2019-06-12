@@ -21,3 +21,4 @@ MicroProgram sequencer
 For better understanding go through each and every one
 For signal refer to Architecture PDF 
 Some of the signal changes plz refer to Architecture image
+REFERENCE LINK: https://github.com/topics/processor?l=verilog
