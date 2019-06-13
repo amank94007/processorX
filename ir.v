@@ -1,9 +1,10 @@
 
 module ir(inst_addr,opcode,Lir,clkout);
+defparam size=32;
 output reg [7:0] opcode;
-input [31:0] inst_addr;
+input [size-1:0] inst_addr;
 input Lir,clkout;
-reg [31:0] reg_ir;
+reg [size-1:0] reg_ir;
 
 
 	always @(posedge clkout)		

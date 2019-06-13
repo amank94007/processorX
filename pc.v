@@ -1,8 +1,9 @@
 module pc(inst_addr,Pc_Rst,Pc_Ld,Pc_addr_in,clkout);
-	output [31:0] inst_addr;
+	defparam size=32;
+	output [size-1:0] inst_addr;
 	input clk,Pc_Rst,Pc_Ld;
-	input [31:0] Pc_addr_in;
-	reg [31:0] addr=0;
+	input [size-1:0] Pc_addr_in;
+	reg [size-1:0] addr=0;
 
 	assign inst_addr = addr;
 
