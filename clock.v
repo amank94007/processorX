@@ -1,6 +1,7 @@
 module clock(clkin,clkout);
-	output reg clkout;
+	output clkout;
+	reg clk;
 	input clkin;
-	always repeat(4) @(posedge clkin) clkout = ~clkout;
-		
+	always repeat(4) @(posedge clkin) clk = ~clk;
+	assign clkout=clk;	
 endmodule
