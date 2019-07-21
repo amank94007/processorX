@@ -1,6 +1,5 @@
 # processorX
-CDAC architecture of the processor 
-#PLZ DO NOT SHARE ITS CONFIDENTIAL
+CDAC architecture of the processor
 
 CREATED BLOCKS
 Memory block is created
