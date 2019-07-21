@@ -1,6 +1,4 @@
 ///have to change opcode 
-// LDA instruvtion to load in result 
-// A is input so take care of rotation and shifting operation 
 
 module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 	
@@ -10,11 +8,11 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 	parameter MSB=data_size-1;
 	
 	///////////  PORTS  //////////////////////////
-	input cin,fl;
+	input cin,fl;						//fl is for masking ; cin is carry in
 	input clkout;
-	input [data_size-1:0] A,B,val;
+	input [data_size-1:0] A,B,val;//val is direct value eg MOV A,5 // val is 5 here
 	input [7:0] opcode;
-	output reg [data_size-1:0] result;
+	output reg [data_size-1:0] result; //accumulator
 	output reg [4:0] flags=0;//[ZCSPV] Zero Carry Sign Parity oVerflow	
 	
 
@@ -94,6 +92,7 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 	
 	always @(*)
 		begin
+		result=A;
 		case(opcode)
 			
 			///Stack and PC operations initally at top then decrement and insert data push operation
@@ -213,13 +212,13 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 				 mem[mptr]=result;
 				 mptr=mptr+1;
 				end
-			//LDA:	//Load from memory address is given
-				//begin
-				//A=mem[mptr];
-				//end
+			LDA:	//Load from memory address is given
+				begin
+				result=mem[mptr];
+				end
 			MVR:
 				begin
-				//A=val;
+				result=val;
 				end
 			ADD: //ADD
 				begin
@@ -323,17 +322,17 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 			ROL: //Rotate left without carry
 				begin
 				result <= @(posedge clkout)  A << 1;
-				//A[0]<=A[MSB];
+				result[0]<=result[MSB];
 				end
 			ROR: //rotate rt without carry
 				begin
 				result <= @(posedge clkout)  A >> 1;
-				//A[MSB]<=A[0];
+				result[MSB]<=result[0];
 				end
 			RLC: //Rotate left with carry
 				begin
 				result <= @(posedge clkout)  A << 1;
-				//A[0]<=flags[3];	//carry
+				result[0]<=flags[3];	//carry
 				end
 			RRC: //Rotate rt with carry
 				begin
