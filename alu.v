@@ -1,78 +1,26 @@
+// Code your design here
+// Code your design here
 ///have to change opcode 
 
 module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 	
-	///////////////////////////////////////////////
-	
+	/////////////////////////////////////////////
+	`include "parameter_opcode.vh"
 	parameter data_size = 32;
 	parameter MSB=data_size-1;
 	
-	///////////  PORTS  //////////////////////////
-	input cin,fl;						//fl is for masking ; cin is carry in
+	///////////  PORTS  /////////////////////////
+	input cin,fl;						//fl is for masking ; cin is carry in aka C
 	input clkout;
-	input [data_size-1:0] A,B,val;//val is direct value eg MOV A,5 // val is 5 here
-	input [7:0] opcode;
-	output reg [data_size-1:0] result; //accumulator
+  	//input [data_size-1:0] A,B,val;// A is R0; B is <rn>; val is <xx>
+    input signed [data_size-1:0] A,B,val;// A is R0; B is <rn>; val is <xx>
+    input [7:0] opcode;
+  	reg signed [data_size-1:0]  A_reg = A;
+  	reg signed[data_size-1:0] B_reg = B;
+  	output reg signed [data_size-1:0] result; //accumulator
 	output reg [4:0] flags=0;//[ZCSPV] Zero Carry Sign Parity oVerflow	
-	
-
-	///////////  OPCODE  /////////////////////////
-	parameter ADD=1;
-	parameter ADI=2;
-	parameter ACA=3;
-	parameter ACI=4;
-	parameter SUB=5;
-	parameter SCI=6;
-	parameter SBI=7;
-	parameter SCA=7;
-	parameter XNR=9;
-	parameter XNI=10;
-	parameter XOR=11;
-	parameter XRI=12;
-	parameter AND=13;
-	parameter ANI=14;
-	parameter ORA=15;
-	parameter ORI=16;
-	parameter NOT=17;
-	parameter NEG=18;
-	parameter SRL=19;
-	parameter SLL=20;
-	parameter ASR=21;
-	parameter ASL=22;
-	parameter SRC=23;
-	parameter SLC=24;
-	parameter ROR=25;
-	parameter ROL=26;
-	parameter RRC=27;
-	parameter RLC=28;
-	parameter CLR=29;
-	parameter INC=30;
-	parameter DEC=31;
-	parameter POP=32;
-	parameter PSH=33;
-	parameter MVS=34;
-	parameter STS=35;
-	parameter CCP=36;
-	parameter JCP=37;
-	parameter CCD=38;
-	parameter JCD=39;
-	parameter RTC=40;
-	parameter JCA=41;
-	parameter MVP=42;
-	parameter RTU=43;
-	parameter CUA=44;
-	parameter STA=45;
-	parameter CLA=46;
-	parameter MVR=47;
-	parameter JUA=48;
-	parameter CUP=49;
-	parameter JUP=50;
-	parameter CUD=51;
-	parameter JUD=52;
-	parameter NOP=53;
-	
-	
-	//////////////////////////////////////////////
+		
+	/////////////////////////////////////////////
 	parameter ssize=32;
 	parameter sptr_size=4;
 	reg [ssize-1:0] stack[(sptr_size**2)-1:0];			//stack memory
@@ -92,11 +40,13 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 	
 	always @(*)
 		begin
-		result=A;
+		//result<=0;
+        //A_reg<=A;
+        //B_reg<=B;
 		case(opcode)
 			
 			///Stack and PC operations initally at top then decrement and insert data push operation
-			POP: //POP in stack
+			/*POP: //POP in stack
 				begin
 				 if(sptr==(sptr_size**2))
 				 stack_U=1;//stack underflow
@@ -220,40 +170,89 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 				begin
 				result=val;
 				end
-			ADD: //ADD
+                */
+			ADA: //ADD 29
 				begin
-				 {flags[0],flags[3],result} = A+B;
+                	{flags[0],flags[3],result} <= A+B;
+                	A_reg<=result;
 				end		
-			ADI: //ADD immediate 
+			ADI: //ADD immediate 30
 				begin
-				 {flags[0],flags[3],result} = A+val;
-				end		
-			ACA: //ADD with carry
-				begin
-				 {flags[0],flags[3],result} = A+B+cin;
-				end
-			ACI: //Add with immediate and carry
-				begin
-				 {flags[0],flags[3],result} = A+val+cin;
-				end
-				
-			SUB: //SUB
-				begin
-				result=A-B;
-				end
-			SBI: //SUB immediate
-				begin
-				result=A-val;
-				end
-			SCI: //SUB immediate with carry
-				begin
-				result=A-val-cin;
-				end
-			SCA: //SUB immediate
-				begin
-				result=A-B-cin;
+                	{flags[0],flags[3],result} <= B+val;
+                	B_reg<=result;
 				end	
-				
+          	SBA: //SUB 31
+				begin
+                	{flags[0],flags[3],result} <= A-B;
+                	A_reg<=result;
+				end
+          	SBI: //SUB immediate 32
+				begin
+                	{flags[0],flags[3],result} <= B-val;
+                	B_reg<=result;
+				end
+			ACA: //ADD with carry 33
+				begin
+                	{flags[0],flags[3],result} <= A+B+cin;
+                	A_reg<=result;
+				end
+			ACI: //Add with immediate and carry 34
+				begin
+                	{flags[0],flags[3],result} <= B+val+cin;
+                	B_reg<=result;
+				end
+			SCA: //SUB immediate 35
+				begin
+                  	{flags[0],flags[3],result} <= A-B-cin;
+                	A_reg<=result;
+				end	
+          	SCI: //SUB immediate with carry 36
+				begin
+                  	{flags[0],flags[3],result} <= B-val-cin;
+                  	B_reg<=result;
+				end
+			ANA: //AND immediate 37
+				begin
+					result <= A & B;
+                	A_reg<=result;
+				end	
+          	ANI: //AND immediate 38
+				begin
+					result <= B & val;
+                	B_reg<=result;
+				end
+          	ORA: //OR immediate 39
+				begin
+					result <= A | B;
+                	A_reg<=result;
+				end	
+			ORI: //OR 40
+				begin
+					result <= B | val;
+                	B_reg<=result;
+                end
+          	XRA: //XOR 41
+				begin
+					result <= A ^ B;
+                  	A_reg<=result;
+				end
+			XRI: //XOR immediate 42
+				begin
+					result <= B ^ val;
+                  	B_reg<=result;
+				end
+          	XNA: //XOR 43
+				begin
+					result <= A ^~ B;
+                  	A_reg<=result;
+				end
+			XNI: //XOR immediate 44
+				begin
+					result <= B ^~ val;
+                  	A_reg<=result;
+				end
+          
+			/*
 			XOR: //XOR
 				begin
 					result = A ^ B;
@@ -270,22 +269,12 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 				begin
 					result = A ~^ val;
 				end	
-			ANI: //AND immediate
-				begin
-					result = A & val;	
-				end
+			
 			AND: //AND
 				begin
 					result = A & B;	
 				end
-			ORI: //OR immediate
-				begin
-					result = A | val;	
-				end	
-			ORA: //OR
-				begin
-					result = A | B;	
-				end
+			
 			NOT: //INVERT
 				begin
 					result = ~A;
@@ -351,21 +340,19 @@ module alu(result,flags,A,B,opcode,clkout,cin,val,fl);
 				begin
 				result = A-1;
 				end
+                */ 
 		endcase
 	end
 					
 	always @(result) //flag register few bits
 		begin
-				if(result<0) //ZS Zero Sign check
+          if((A[MSB]||B[MSB]) && result[MSB])//ZS Zero Sign check ADD
 					{flags[4],flags[2]}=2'b01;
-				else if (result>0)	
-					{flags[4],flags[2]}=2'b00;
 				else if (result==0)
 					{flags[4],flags[2]}=2'b10;
 				else 
 					{flags[4],flags[2]}=2'b00;
-				flags[1]=^result;// Parity check
-		end	
-		
+          flags[1]=^result;// Odd parity check
+		end
 	
 endmodule
